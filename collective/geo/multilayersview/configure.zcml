@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.geo.multilayersview">
+
+  <five:registerPackage package="." initialize=".initialize" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Collective geo multilayer view"
+      directory="profiles/default"
+      description='Extension profile for collective geo multilayer view'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <browser:page
+      name="kml-multilayers"
+      for="Products.CMFCore.interfaces.IFolderish"
+      class=".kmlopenlayersview.KmlOpenLayersView"
+      layer = "collective.geo.kml.interfaces.IGeoKmlLayer"
+      template = "kmlopenlayersview.pt"
+      permission = "zope2.View"
+      />
+
+  <adapter
+      for=".kmlopenlayersview.IMultiLayersView
+           zope.interface.Interface
+           zope.interface.Interface
+           zope.interface.Interface"
+      factory=".kmlopenlayersview.KMLMapLayers"
+      />
+
+  <browser:page
+      name="kml-searchlayers"
+      for="*"
+      layer = "collective.geo.kml.interfaces.IGeoKmlLayer"
+      template="kmlsearchlayers.pt"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      name="kml-file"
+      for="*"
+      layer = "collective.geo.kml.interfaces.IGeoKmlLayer"
+      class=".kmlopenlayersview.KMLFile"
+      template="kmlsource.pt"
+      permission="zope.Public"
+      />
+
+</configure>
