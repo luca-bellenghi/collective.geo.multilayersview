@@ -21,7 +21,6 @@
       for="Products.CMFCore.interfaces.IFolderish"
       class=".kmlopenlayersview.KmlOpenLayersView"
       layer = "collective.geo.kml.interfaces.IGeoKmlLayer"
-      template = "kmlopenlayersview.pt"
       permission = "zope2.View"
       />
 
