@@ -10,6 +10,15 @@
   <metal:content-core fill-slot="content-core">
     <metal:content-core define-macro="content-core">
       <metal:use use-macro="context/@@collectivegeo-macros/map-widget"  />
+      <div tal:condition="request/errors|nothing" class="field error">
+          <p i18n:translate="">Errors indicate that one or more requirements have not been met. All errors must be fixed for the KML to be valid. Note that a file may still display correctly in an Earth browser even if it has errors.</p>
+          <ul>
+              <tal:items repeat="error request/errors">
+                  <li tal:content="python:'%s - %s' % (error['title'], error['error'])"></li>
+              </tal:items>
+          </ul>
+      </div>
+
       <script type="text/javascript"
               src="++resource++geo.kml.javascripts/kml_openlayers.js"
         ></script>

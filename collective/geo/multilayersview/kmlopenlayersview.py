@@ -6,6 +6,7 @@ from lxml import etree
 from plone.memoize.instance import memoizedproperty
 from zope.interface import Interface
 from zope.interface import implements
+from zope.component import getMultiAdapter
 import os
 
 
@@ -45,7 +46,7 @@ class KmlOpenLayersView(BrowserView):
             return str(err)
         return
 
-    def __call__(self):
+    def check_files(self):
         atfiles = self.context.listFolderContents({'portal_type': 'File'})
         validfiles = []
         errors = []
@@ -55,8 +56,14 @@ class KmlOpenLayersView(BrowserView):
                 validfiles.append(atfile)
             else:
                 errors.append({'error': check, 'title': atfile.Title()})
-        self.request.set('validfiles', validfiles)
         self.request.set('errors', errors)
+        return
+
+    def __call__(self):
+        pps = getMultiAdapter((self.context, self.request), name='plone_portal_state')
+        isanon = pps.anonymous()
+        if not isanon:
+            self.check_files()
         return self.template()
 
 
@@ -76,5 +83,5 @@ class KMLMapLayers(MapLayers):
     def layers(self):
         layers = super(KMLMapLayers, self).layers()
         for item in self.context.listFolderContents({'portal_type': 'File'}):
-            layers.append(KMLMapLayer(context=item.getObject()))
+            layers.append(KMLMapLayer(context=item))
         return layers
