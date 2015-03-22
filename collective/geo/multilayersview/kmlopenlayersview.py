@@ -1,12 +1,10 @@
 from Products.Five import BrowserView
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from collective.geo.mapwidget.browser.widget import MapLayers
 from collective.geo.mapwidget.maplayers import MapLayer
 from lxml import etree
 from plone.memoize.instance import memoizedproperty
 from zope.interface import Interface
 from zope.interface import implements
-from zope.component import getMultiAdapter
 import os
 
 
@@ -21,13 +19,9 @@ class KMLFile(BrowserView):
         return self.context.getFile().data
 
 
-class KmlOpenLayersView(BrowserView):
-    """ Kml Openlayers View """
-
-    implements(IMultiLayersView)
+class KmlValidation(BrowserView):
 
     xsd = 'ogckml22.xsd'
-    template = ViewPageTemplateFile('kmlopenlayersview.pt')
 
     def validate(self, xml):
         full_path = os.path.realpath(__file__)
@@ -48,23 +42,18 @@ class KmlOpenLayersView(BrowserView):
 
     def check_files(self):
         atfiles = self.context.listFolderContents({'portal_type': 'File'})
-        validfiles = []
         errors = []
         for atfile in atfiles:
             check = self.validate(atfile.getFile())
-            if check is True:
-                validfiles.append(atfile)
-            else:
+            if check is not True:
                 errors.append({'error': check, 'title': atfile.Title()})
-        self.request.set('errors', errors)
-        return
+        return errors
 
-    def __call__(self):
-        pps = getMultiAdapter((self.context, self.request), name='plone_portal_state')
-        isanon = pps.anonymous()
-        if not isanon:
-            self.check_files()
-        return self.template()
+
+class KmlOpenLayersView(BrowserView):
+    """ Kml Openlayers View """
+
+    implements(IMultiLayersView)
 
 
 class KMLMapLayer(MapLayer):

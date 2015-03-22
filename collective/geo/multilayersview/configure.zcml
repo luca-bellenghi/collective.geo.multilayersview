@@ -17,10 +17,20 @@
       />
 
   <browser:page
+      name="kml-validation"
+      for="Products.CMFCore.interfaces.IFolderish"
+      class=".kmlopenlayersview.KmlValidation"
+      template="kml-validation.pt"
+      layer = "collective.geo.kml.interfaces.IGeoKmlLayer"
+      permission = "zope2.View"
+      />
+
+  <browser:page
       name="kml-multilayers"
       for="Products.CMFCore.interfaces.IFolderish"
       class=".kmlopenlayersview.KmlOpenLayersView"
       layer = "collective.geo.kml.interfaces.IGeoKmlLayer"
+      template="kmlopenlayersview.pt"
       permission = "zope2.View"
       />
 

@@ -1,0 +1,11 @@
+<div tal:define="errors view/check_files"
+     tal:condition="errors"
+     class="field error">
+     <p i18n:translate="">Errors indicate that one or more requirements have not been met. All errors must be fixed for the KML to be valid. Note that a file may still display correctly in an Earth browser even if it has errors.</p>
+    <ul>
+        <tal:items repeat="error errors">
+            <li style="display:inline-block;
+                       margin:1em" tal:content="python:'%s - %s' % (error['title'], error['error'])"></li>
+        </tal:items>
+    </ul>
+</div>
